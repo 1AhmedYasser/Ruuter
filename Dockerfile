@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk as build
+FROM eclipse-temurin:17-jdk-alpine as build
 WORKDIR /workspace/app
 
 COPY gradlew .
@@ -12,7 +12,7 @@ RUN chmod 754 ./gradlew
 RUN ./gradlew -Pprod clean bootJar
 RUN mkdir -p build/libs && (cd build/libs; jar -xf *.jar)
 
-FROM openjdk:17-jdk
+FROM eclipse-temurin:17-jdk-alpine
 VOLUME /build/tmp
 
 ARG DEPENDENCY=/workspace/app/build/libs
@@ -25,7 +25,7 @@ ENV application.config-path=/DSL
 COPY .env /app/.env
 RUN echo BUILDTIME=`date +%s` >> /app/.env
 
-RUN adduser  ruuter
+RUN adduser -D ruuter
 RUN mkdir logs
 RUN mkdir DSL
 RUN chown ruuter:ruuter /logs
